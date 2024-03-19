@@ -14,12 +14,13 @@ jobs:
   slack_notification:
     runs-on: ubuntu-latest
     needs: auto_assign_reviewer
+    if: github.event.pull_request.requested_reviewers != null
     steps:
       - name: Send Slack Notification
         id: slack_notification
         env: 
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          REVIEWER: ${{ github.event.pull_request.assignee.login }}
+          REVIEWER: ${{ github.event.pull_request.requested_reviewers[0].login }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
             "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
@@ -44,7 +45,7 @@ jobs:
                   },
                   {
                     "title": "Repositório da Aplicação",
-                    "value": "${{ github.repository }}",
+                    "value": "<${{ github.event.repository.html_url }}|${{ github.repository.name }}>",
                     "short": true
                   },
                   {
