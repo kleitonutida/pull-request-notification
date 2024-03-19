@@ -2,7 +2,7 @@ name: Send Slack Notifications for Open PRs
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, ready_for_review]
 
 jobs:
   send_slack_notification:
@@ -13,7 +13,11 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: pull-request-test
-        SLACK_TITLE: Pull Request
-        SLACK_USERNAME: Repatriation
+        SLACK_TITLE: Message
+        SLACK_USERNAME: RepatriationBot
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "This is your custom message."
+        SLACK_MESSAGE: |
+          "Novo Pull Request aberto e atribuído a <@${{ github.event.pull_request.assignee.login }}>!"
+          "Título: ${{ github.event.pull_request.title }}"
+          "Autor: <@${{ github.event.pull_request.user.login }}>"
+          "Link: ${{ github.event.pull_request.html_url }}"
