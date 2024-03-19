@@ -4,14 +4,19 @@ on:
     types: [opened, ready_for_review, edited]
 
 jobs:
-  auto_assign_and_notify:
+  auto_assign_reviewer:
     runs-on: ubuntu-latest
     steps:
       - name: Auto Assign Reviewer
         uses: kentaro-m/auto-assign-action@v2.0.0
         with:
           configuration-path: '.github/auto-assign.yml' # Only needed if you use something other than .github/auto_assign.yml
+  slack_notification:
+    runs-on: ubuntu-latest
+    needs: auto_assign_reviewer
+    steps:
       - name: Send Slack Notification
+        id: slack_notification
         env: 
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REVIEWER: ${{ github.event.pull_request.assignee.login }}
