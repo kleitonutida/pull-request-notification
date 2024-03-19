@@ -17,7 +17,7 @@ jobs:
         SLACK_USERNAME: RepatriationBot
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_MESSAGE: |
-          "Novo Pull Request aberto e atribuído a <@${{ github.event.pull_request.assignee.login }}>!"
-          "Título: ${{ github.event.pull_request.title }}"
-          "Autor: <@${{ github.event.pull_request.user.login }}>"
-          "Link: ${{ github.event.pull_request.html_url }}"
+          Novo Pull Request aberto e atribuído a <@${{ github.event.pull_request.requested_reviewers }}>!
+          Título: ${{ github.event.pull_request.title }}
+          Autor: <@${{ github.event.pull_request.user.login }}>!
+          Link: ${{ github.event.pull_request.html_url }}
