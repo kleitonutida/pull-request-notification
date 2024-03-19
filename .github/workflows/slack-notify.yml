@@ -8,11 +8,12 @@ jobs:
   send_slack_notification:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Notification Slack
       uses: rtCamp/action-slack-notify@v2
       env:
-        SLACK_CHANNEL: ci
-        SLACK_TITLE: Post Title
-        SLACK_USERNAME: BotCI
+        SLACK_CHANNEL: pull-request-test
+        SLACK_TITLE: Pull Request
+        SLACK_USERNAME: Repatriation
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_MESSAGE: "This is your custom message."
