@@ -22,6 +22,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REVIEWER: ${{ github.event.pull_request.requested_reviewers.users[0].login }}
         run: |
+          echo "${{ needs.auto_assign_reviewer.outputs }}"
           echo "Reviewer: ${{ toJson(github.event.pull_request.requested_reviewers) }}"
           echo "Reviewer Users: ${{ github.event.pull_request.requested_reviewers[0] }}"
           curl -X POST -H 'Content-type: application/json' --data '{
