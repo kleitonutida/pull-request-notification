@@ -18,3 +18,5 @@ jobs:
       - name: Slack Notification
         run: |
           echo "Slack notification"
+          echo "${{ toJson(github.repository.pull_request) }}"
+          echo "${{ toJson(github.repository.pull_request.review_requested) }}"
