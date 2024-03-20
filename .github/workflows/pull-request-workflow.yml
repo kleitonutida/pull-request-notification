@@ -14,7 +14,7 @@ jobs:
   slack_notification:
     runs-on: ubuntu-latest
     needs: auto_assign_reviewer
-    if: github.event.pull_request.requested_reviewers != null
+    if: ${{ needs.auto_assign_reviewer.result == 'success' }}
     steps:
       - name: Send Slack Notification
         id: slack_notification
@@ -22,8 +22,8 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REVIEWER: ${{ github.event.pull_request.requested_reviewers.users[0].login }}
         run: |
-          echo "Reviewer: ${{ toJson(github.event.pull_request.requested_teams ) }}"
-          echo "Reviewer Users: ${{ github.event.pull_request.requested_teams.name }}"
+          echo "Pull Request: ${{ toJson(github.event.pull_request ) }}"
+
           curl -X POST -H 'Content-type: application/json' --data '{
             "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
             "attachments": [
