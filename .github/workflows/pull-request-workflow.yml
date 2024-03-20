@@ -1,4 +1,4 @@
-name: 'Pull Request Workflow'
+name: 'Auto Assign'
 on:
   pull_request:
     types: [opened, ready_for_review, edited]
@@ -11,71 +11,3 @@ jobs:
         uses: kentaro-m/auto-assign-action@v2.0.0
         with:
           configuration-path: '.github/auto-assign.yml' # Only needed if you use something other than .github/auto_assign.yml
-  slack_notification:
-    runs-on: ubuntu-latest
-    needs: auto_assign_reviewer
-    if: ${{ needs.auto_assign_reviewer.result == 'success' }}
-    steps:
-      - name: Send Slack Notification
-        id: slack_notification
-        env: 
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          REVIEWER: ${{ github.event.pull_request.requested_reviewers.users[0].login }}
-        run: |
-          echo "Pull Request: ${{ toJson(github.event.pull_request ) }}"
-
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
-            "attachments": [
-              {
-                "color": "#36a64f",
-                "fields": [
-                  {
-                    "title": "Revisor Atribuído",
-                    "value": "${{ env.REVIEWER }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Tipo de Evento",
-                    "value": "${{ github.event_name }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Status",
-                    "value": "${{ job.status }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Repositório da Aplicação",
-                    "value": "<${{ github.event.repository.html_url }}|${{ github.repository.name }}>",
-                    "short": true
-                  },
-                  {
-                    "title": "Branch do Pull Request",
-                    "value": "${{ github.event.pull_request.head.ref }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Branch Base do Pull Request",
-                    "value": "${{ github.event.pull_request.base.ref }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Usuário que Abriu o Pull Request",
-                    "value": "${{ github.event.pull_request.user.login }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Data e Hora",
-                    "value": "${{ github.event.pull_request.created_at }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Link do Pull Request",
-                    "value": "<${{ github.event.pull_request.html_url }}|Link>",
-                    "short": false
-                  }
-                ]
-              }
-            ]
-          }' $SLACK_WEBHOOK_URL

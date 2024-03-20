@@ -1,0 +1,71 @@
+name: 'Slack Notification'
+on:
+  pull_request:
+    types: [review_requested]
+
+jobs:
+  slack_notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification
+        id: slack_notification
+        env: 
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          echo "Pull Request: ${{ toJson(github.event.pull_request ) }}"
+
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
+            "attachments": [
+              {
+                "color": "#36a64f",
+                "fields": [
+                  {
+                    "title": "Revisor Atribuído",
+                    "value": "Teste",
+                    "short": true
+                  },
+                  {
+                    "title": "Tipo de Evento",
+                    "value": "${{ github.event_name }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Status",
+                    "value": "${{ job.status }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Repositório da Aplicação",
+                    "value": "<${{ github.event.repository.html_url }}|${{ github.repository.name }}>",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch do Pull Request",
+                    "value": "${{ github.event.pull_request.head.ref }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch Base do Pull Request",
+                    "value": "${{ github.event.pull_request.base.ref }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Usuário que Abriu o Pull Request",
+                    "value": "${{ github.event.pull_request.user.login }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Data e Hora",
+                    "value": "${{ github.event.pull_request.created_at }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Link do Pull Request",
+                    "value": "<${{ github.event.pull_request.html_url }}|Link>",
+                    "short": false
+                  }
+                ]
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL
