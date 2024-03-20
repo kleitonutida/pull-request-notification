@@ -22,9 +22,8 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REVIEWER: ${{ github.event.pull_request.requested_reviewers.users[0].login }}
         run: |
-          echo "${{ needs.auto_assign_reviewer.outputs.assigned_reviewer }}"
-          echo "Reviewer: ${{ toJson(github.event.pull_request.requested_reviewers) }}"
-          echo "Reviewer Users: ${{ github.event.pull_request.requested_reviewers[0] }}"
+          echo "Reviewer: ${{ toJson(github.event.pull_request.requested_teams ) }}"
+          echo "Reviewer Users: ${{ github.event.pull_request.requested_teams.name }}"
           curl -X POST -H 'Content-type: application/json' --data '{
             "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
             "attachments": [
