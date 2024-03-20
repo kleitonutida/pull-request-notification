@@ -22,7 +22,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           REVIEWER: ${{ github.event.pull_request.requested_reviewers.users[0].login }}
         run: |
-          echo "Reviewer: ${{ github.event.pull_request.requested_reviewers }}"
+          echo "Reviewer: ${{ toJson(github.event.pull_request.requested_reviewers) }}"
           echo "Reviewer Users: ${{ github.event.pull_request.requested_reviewers[0] }}"
           curl -X POST -H 'Content-type: application/json' --data '{
             "text":"Novo Pull Request aberto: ${{ github.event.pull_request.title }}",
