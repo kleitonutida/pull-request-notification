@@ -2,6 +2,7 @@ name: 'Auto Assign'
 on:
   pull_request:
     types: [opened, ready_for_review]
+  workflow_dispatch:
 
 jobs:
   auto_assign_reviewer:
@@ -19,5 +20,6 @@ jobs:
         run: |
           echo "Slack notification"
           echo "REPOSITORY >> ${{ toJson(github.repository) }}"
+          echo "Events >> ${{ toJson(github.event) }}"
           echo "PULL REQUEST >> ${{ toJson(github.event.pull_request) }}"
           
